@@ -6,6 +6,8 @@
 #endif
 
 #include <ESP8266WebServer.h>
+#define MAX_URI_ACTIONS 3
+#define MAX_RESSOURCE_COUNT 5
 
 /*
 -Ressource based REST interface
@@ -23,25 +25,31 @@ handleRest
 Stockage des ressources
 */
 
-#define MAX_URI_ACTIONS 3;
-
 typedef void (*Callback)();
 typedef void (*Gcallback)(uint8_t ressourceID);
 
+struct Action {
+  char* name;
+  Callback funcptr;
+};
+
 typedef struct ressource {
   char* ressourceName;
-  char* actions[MAX_URI_ACTIONS];
+  Action actions[MAX_URI_ACTIONS];
   Callback funcPtrCallback;
   Callback defaultCallback;
 }ressource;
 
 typedef struct groupRessources {
   char* groupRessourceName;
-  char* actions[MAX_URI_ACTIONS];
-  uint8_t count;
-  Callback defaultCallback
+  Action actions[MAX_URI_ACTIONS];
+  uint8_t count;                  //number of ressources (ex if we want to control 2 lights count will be 2)
+  Callback defaultCallback;
   Gcallback groupPtrCallback;
-}
+}groupRessources;
+
+static struct ressource s_ressource[MAX_RESSOURCE_COUNT];
+static struct groupRessources s_groupRessources[MAX_RESSOURCE_COUNT];
 
 class Rrest {
 public:
@@ -59,20 +67,21 @@ public:
   void addRessource(char* ressourceName);
   void addRessourceGroup(char* ressourceName, uint8_t count = 0);
 
-  void addRessourceCallback(char* ressourceName, void (*Callback)());
+  void addRessourceCallback(char* ressourceName, Callback funcPtr); //callbakc for base ressource; typically read
 
-  void addAction(char* ressourceName, char* action, void (*Callback)());
-  void addAction(char* ressourceName, char* action, void (*Callback)(uint8_t ressourceID));
+  void addAction(char* ressourceName, char* action, Callback funcPtr);  //direct ressource
+  void addAction(char* ressourceName, char* action, Gcallback funcPtr); //grouped ressource
 
-  void defaultCallback(void (*Callback)());
+  void removeRessource(char* ressourceName);
+  void removeRessourceGroup(char* ressourceName);
 
 private:
   ESP8266WebServer *webserver;
 
   /*PARSERS*/
-  void directParser();
-  void ressourceParser();
-  void groupParser();
+  Callback directParser();
+  Callback ressourceParser();
+  Gcallback groupParser();
 
 };
 
