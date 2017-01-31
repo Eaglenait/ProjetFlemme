@@ -23,6 +23,26 @@ handleRest
 Stockage des ressources
 */
 
+#define MAX_URI_ACTIONS 3;
+
+typedef void (*Callback)();
+typedef void (*Gcallback)(uint8_t ressourceID);
+
+typedef struct ressource {
+  char* ressourceName;
+  char* actions[MAX_URI_ACTIONS];
+  Callback funcPtrCallback;
+  Callback defaultCallback;
+}ressource;
+
+typedef struct groupRessources {
+  char* groupRessourceName;
+  char* actions[MAX_URI_ACTIONS];
+  uint8_t count;
+  Callback defaultCallback
+  Gcallback groupPtrCallback;
+}
+
 class Rrest {
 public:
   //default constructor
@@ -30,7 +50,7 @@ public:
 
   //called periodically to check if an url has been sent
   //we could make a better system for this to be triggered when a client sends a request
-  void handleRest();
+  bool handleRest();
 
   //Setup phase
   void begin(ESP8266WebServer* _server);

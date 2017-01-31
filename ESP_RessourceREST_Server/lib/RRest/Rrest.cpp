@@ -1,13 +1,16 @@
 #include <Rrest.h>
 
-Rrest::Rrest() { }
+Rrest::Rrest() {
+  static struct ressource s_ressource;
+  static struct groupRessources s_groupRessources;
+}
 
 void Rrest::begin(ESP8266WebServer* _server) {
   _server = webserver;
 }
 
-void Rrest::handleRest() {
-
+bool Rrest::handleRest() {
+  return false;
 }
 
 /*PARSERS*/
