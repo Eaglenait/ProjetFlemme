@@ -3,9 +3,11 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <Timer.h>
+#include <Rrest.h>
 
 ESP8266WebServer server(80);
 Timer t;
+Rrest r;
 
 const char* ssid = "1337 internet";
 const char* password = "icanhasinternet";
