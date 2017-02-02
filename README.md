@@ -1,5 +1,5 @@
 # ProjetFlemme
-"La flemme c'est bien" - bill gates
+"La flemme c'est bien" - Bill Gates
 
 Branch for working or finished projects
 
