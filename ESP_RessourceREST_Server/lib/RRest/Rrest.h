@@ -8,7 +8,6 @@
 #include <ESP8266WebServer.h>
 #define MAX_URI_ACTIONS 3
 #define MAX_RESSOURCE_COUNT 5
-#define ARRCOUNT(a) (sizeof(a) / sizeof(*a))
 
 /*
 -Ressource based REST interface

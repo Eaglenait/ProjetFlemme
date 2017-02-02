@@ -62,7 +62,7 @@ void addRessourceCallback(char* ressourceName, Callback funcPtr) {
 //broken
 //search for ressrouce, then search the number of action and append
 void addAction(char* ressourceName, char* action, Callback funcPtr) {
-  uint8_t ressourcePos = 0;
+  uint8_t ressourcePos = 25;
   uint8_t actionCount;
 
   //search for the ressource
