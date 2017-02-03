@@ -12,6 +12,20 @@ Rrest r;
 const char* ssid = "1337 internet";
 const char* password = "icanhasinternet";
 
+void handleico() {
+  server.send(404);
+}
+
+void handleNotFound() {
+  if(!r.handleRest()) { //we call rest when the webserver doesn't recognize the entered URI
+    String message = "404 not found";
+    server.send(404,"text/plain", message);
+    notfound.close();
+  } else {
+    server.send(200);
+  }
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -32,6 +46,9 @@ void setup() {
   }
   Serial.println("mDNS Responder setup");
 
+  server.on("/", handleNotFound);
+  server.on("/favicon.ico", handleico);
+  server.onNotFound(handleNotFound);
 
   //HTTP server
   server.begin();
