@@ -2,19 +2,14 @@
 
 Rrest::Rrest() {}
 
-void Rrest::begin(ESP8266WebServer* server) {
-  server = _webserver;
-}
-
 /*TODO debug design and finish
   program enters here
-
   store uri
   call parser with chopped uri
 */
 bool Rrest::handleRest() {
-  char* _uri = new char[_webserver->uri().length() + 1];
-  strcpy(_uri, _webserver->uri().c_str());
+  char* _uri = new char[server.uri().length() + 1];
+  strcpy(_uri, server.uri().c_str());
 
   uint8_t blocks, nextBlock = 0;
   uint8_t uriLength = strlen(_uri);

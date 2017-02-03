@@ -9,18 +9,24 @@ ESP8266WebServer server(80);
 Timer t;
 Rrest r;
 
-const char* ssid = "1337 internet";
-const char* password = "icanhasinternet";
+// const char* ssid = "1337 internet";
+// const char* password = "icanhasinternet";
+const char* ssid = "ActiStaff";
+const char* password = "Act1K3hl";
+
+void turnOn() {
+  Serial.println("light turned on");
+}
 
 void handleico() {
   server.send(404);
 }
 
 void handleNotFound() {
+  Serial.println("handleNotFound");
   if(!r.handleRest()) { //we call rest when the webserver doesn't recognize the entered URI
     String message = "404 not found";
     server.send(404,"text/plain", message);
-    notfound.close();
   } else {
     server.send(200);
   }
@@ -37,16 +43,26 @@ void setup() {
     WiFi.begin(ssid, password);
   }
 
-  Serial.println(F("WiFi connected"));
+  /*
+    Rest test zone
+  */
+
+  // r.addRessource("light");
+  // r.addAction("light", "on",turnOn);
+
+  Serial.println("WiFi connected");
   Serial.println(WiFi.localIP());
 
-  while(!MDNS.begin("esp8266Server")) {
+  while(!MDNS.begin("esp8266server")) {
     delay(1000);
     Serial.println("Error setting up MDNS responder!");
   }
   Serial.println("mDNS Responder setup");
 
-  server.on("/", handleNotFound);
+  server.on("/", [](){
+    String message = "bitebitebite";
+    server.send(200,"text/plain", message);
+  });
   server.on("/favicon.ico", handleico);
   server.onNotFound(handleNotFound);
 

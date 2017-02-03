@@ -11,6 +11,7 @@
 
 #define ARRCOUNT(a) = (sizeof(a) / sizeof(*a));
 
+extern ESP8266WebServer server;
 /*
 -Ressource based REST interface
 TODO
@@ -65,9 +66,6 @@ public:
   //we could make a better system for this to be triggered when a client sends a request
   bool handleRest();
 
-  //Setup phase
-  void begin(ESP8266WebServer* _server);
-
   /*RESSOURCE MANAGEMENT FUNCTIONS*/
 
   /*
@@ -118,8 +116,6 @@ public:
   void listGroupeRessource();
 
 private:
-  ESP8266WebServer *_webserver;
-
   /*Ressource locator
   returns 255 if the ressource doesn't exists
   */
