@@ -1,6 +1,5 @@
 #ifndef Rrest_h
 #define Rrest_h
-
 #ifdef ESP8266
 #include <pgmspace.h>
 #endif
@@ -84,6 +83,7 @@ public:
   add a default callback for the ressource
   example on ressource light:
   http://esp.local/light will be the default callback (usually read)
+  ressourceType = GROUPED or SIMPLE
   */
   void addRessourceCallback(char* ressourceName, Callback funcPtr, RessourceType t);
 
@@ -110,10 +110,6 @@ public:
   sets the name to 0 and deletes all callbacks + actions
   */
   void removeRessourceGroup(char* ressourceName);
-
-  /*DEBUG*/
-  void listRessource();
-  void listGroupeRessource();
 
 private:
   /*Ressource locator
