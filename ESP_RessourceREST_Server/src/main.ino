@@ -11,8 +11,11 @@ Timer t;
 
 const char* ssid = "1337 internet";
 const char* password = "icanhasinternet";
+<<<<<<< HEAD
 // const char* ssid = "ActiStaff";
 // const char* password = "Act1K3hl";
+=======
+>>>>>>> a12a1b271ac5d1aed818475153b7505778288181
 
 void turnOn() {
   Serial.println("light turned on");
@@ -58,10 +61,11 @@ void setup() {
     delay(1000);
     Serial.println("Error setting up MDNS responder!");
   }
+  MDNS.addService("esp", "tcp", 80);
   Serial.println("mDNS Responder setup");
 
   server.on("/", [](){
-    String message = "bitebitebite";
+    String message = "root not found";
     server.send(200,"text/plain", message);
   });
   server.on("/favicon.ico", handleico);
