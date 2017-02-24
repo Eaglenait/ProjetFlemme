@@ -13,8 +13,10 @@
 #include <rapi.h>
 #include <Timer.h>
 
-const char* ssid = "ActiStaff";
-const char* password = "Act1K3hl";
+// const char* ssid = "ActiStaff";
+// const char* password = "Act1K3hl";
+const char* ssid = "1337 internet";
+const char* password = "icanhasinternet";
 
 MDNSResponder mdns;
 Timer t;
@@ -114,8 +116,8 @@ void setup(){
   }
   mdns.addService("door", "tcp", 80);
   mdns.addService("rest", "tcp", 80);
-  
-  
+
+
   server.on("/", handleNotFound);
   server.on("/favicon.ico", handleico);
   server.onNotFound(handleNotFound);
