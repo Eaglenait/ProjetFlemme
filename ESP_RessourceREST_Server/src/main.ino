@@ -3,19 +3,18 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <Timer.h>
-// #include <Rrest.h>
+#include <Rrest.h>
 
 ESP8266WebServer server(80);
 Timer t;
-// Rrest r;
+Rrest r;
 
-const char* ssid = "1337 internet";
-const char* password = "icanhasinternet";
-<<<<<<< HEAD
-// const char* ssid = "ActiStaff";
-// const char* password = "Act1K3hl";
-=======
->>>>>>> a12a1b271ac5d1aed818475153b7505778288181
+// const char* ssid = "1337 internet";
+// const char* password = "icanhasinternet";
+
+const char* ssid = "SFR_8550";
+const char* password = "noff0erumustaltmisec";
+
 
 void turnOn() {
   Serial.println("light turned on");
@@ -33,6 +32,7 @@ void handleNotFound() {
   // } else {
   //   server.send(200);
   // }
+  r.handleRest();
   server.send(404);
 }
 
@@ -61,6 +61,7 @@ void setup() {
     delay(1000);
     Serial.println("Error setting up MDNS responder!");
   }
+
   MDNS.addService("esp", "tcp", 80);
   Serial.println("mDNS Responder setup");
 
@@ -77,5 +78,5 @@ void setup() {
 }
 
 void loop() {
-
+  server.handleClient();
 }

@@ -112,7 +112,15 @@ public:
   void removeRessourceGroup(char* ressourceName);
 
 private:
-  /*Ressource locator
+  /*
+  String extractor
+  will extract a c string from src from char s to char e
+  it has absolutly no safty it will fuck up your code if not used with care (overflow etc)
+  */
+  char* strExtr(char* src, uint8_t s, uint8_t e);
+
+  /*
+  Ressource locator
   returns 255 if the ressource doesn't exists
   */
   uint8_t locateRessource(char* ressourceName, struct ressource* st);
@@ -122,7 +130,6 @@ private:
   Callback directParser();
   Callback ressourceParser();
   Gcallback groupParser();
-
 };
 
 #endif

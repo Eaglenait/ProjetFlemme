@@ -12,79 +12,63 @@ bool Rrest::handleRest() {
   strcpy(_uri, server.uri().c_str());
   uint8_t uriLength = strlen(_uri);
 
-  Serial.println("");
-  Serial.print("Base uri: ");
-  Serial.print(_uri);
-  Serial.print(" lenght ");
-  Serial.println(uriLength);
+  //debug: show the uri and its lenght
+  // Serial.print("URI: ");
+  // Serial.print(_uri);
+  // Serial.print(" lenght: ");
+  // Serial.println(uriLength);
 
-  uint8_t blocks = 0;
-  uint8_t blocksCharLenght[5];
+  //count number of blocks
+   uint8_t b = 0; //number of blocks
+   for (size_t i = 0; i < uriLength; i++) {
+     if(_uri[i] == '/' && i < uriLength-1) {
+       if(isdigit(_uri[i+1]) || isalpha(_uri[i+1])) {
+         ++b;
+       }
+     }
+   }
+   //get position of blocks
+   uint8_t bPos[b], c = 0;
+   for (size_t j = 0; j < uriLength; j++) {
+     if(_uri[j] == '/' && j < uriLength-1) {
+       if(isdigit(_uri[j+1]) || isalpha(_uri[j+1])){
+        bPos[c++] = j;
+       }
+     }
+   }
 
-  //first scan: count the number of valid blocks
-  for (size_t i = 0; i < uriLength; ++i) {
-    if(_uri[i] == '/' && i != uriLength-1){
-      if(isalpha(_uri[i+1]) || isdigit(_uri[i+1])){
-        uint8_t j = i+1;
-        while (_uri[j] != '/' && j != uriLength) {
-          blocksCharLenght[blocks]++;
-          ++j;
-        }
-        ++blocks;
-      }
-    }
-  }
+  //debug : show number of blocks position of each block
+  //  Serial.print("number of blocks: ");
+  //  Serial.println(b);
+  //  Serial.print("block pos: ");
+  //  for (size_t u = 0; u < b; ++u) {
+  //    Serial.print(bPos[u]);
+  //    if(u != b-1) {
+  //      Serial.print(',');
+  //    }
+  //  }
 
-  //debug
-  Serial.print("Blocks: ");
-  Serial.println(blocks);
-  Serial.println("blocksCharLenght: ");
-  for (size_t cc = 0; cc < sizeof(blocksCharLenght); ++cc) {
-    Serial.print(" block ");
-    Serial.print(cc);
-    Serial.print(": lenght: ");
-    Serial.println(blocksCharLenght[cc]);
-  }
+   //separate each uri block into blockStorage
+   char *blockStorage[b];
+   c = sizeof(bPos);//powerful naming convention
+   for (size_t k = 0; k < b; ++k) {
+     if(k == c-1){
+       blockStorage[k] = strExtr(_uri, bPos[k]+1, uriLength);
+     } else {
+       blockStorage[k] = strExtr(_uri,bPos[k]+1,bPos[k+1]); //garbage coding but it works
+     }
+   }
 
-  char *tmp[blocks]; //TODO changer le mode de stockage ou apprendre à accéder aux char individuels de cette variable
+  //debug : shows the content of blockStorage
+  //  Serial.println("");
+  //  Serial.println("blockStorage");
+  //  for (size_t e = 0; e < b; ++e) {
+  //    Serial.print(e);
+  //    Serial.print(" : ");
+  //    Serial.println(blockStorage[e]);
+  //  }
 
-  Serial.println("explode: ");
-
-  uint8_t count = 1; //starts at one to omit first '/' char
-
-  for (size_t k = 0; k <= blocks; ++k) {
-    size_t l = 0;
-    if(blocksCharLenght[k] != 0) {
-
-      //debug
-      Serial.print(" Block ");
-      Serial.println(k);
-      Serial.print(" lenght ");
-      Serial.print(blocksCharLenght[k]);
-      Serial.print(" ");
-
-      char* buffer = new char[blocksCharLenght[k]];
-
-      for (l = 0; l < blocksCharLenght[k]; ++l) {
-        buffer[l] = _uri[count];
-        Serial.print(_uri[count]);
-        count++;
-      }
-      *tmp[blocks] = *buffer;
-      buffer = 0;
-      Serial.println("");
-      count++;
-    }
-  }
-
-  //debug
-  Serial.println("debug tmp: ");
-  for (size_t i = 0; i < blocks; i++) {
-    Serial.print(" ");
-    Serial.println(*tmp[i]);
-  }
-
-  directParser(); //modify to call with uri
+  return false; //default return until we call the parsers
 }
 
 /*PARSERS*/
@@ -260,4 +244,31 @@ uint8_t Rrest::locateRessource(char* ressourceName,struct groupRessources* st) {
     if(res == MAX_RESSOURCE_COUNT) return 255;
   }
   return res;
+}
+
+char* Rrest::strExtr(char* src, uint8_t s, uint8_t e) {
+  uint8_t len = e-s;
+
+  //debug
+  // Serial.println("");
+  // Serial.println("Starting extraction with ");
+  // Serial.print(s);
+  // Serial.print(" - ");
+  // Serial.print(e);
+  // Serial.print(" len ");
+  // Serial.print(len);
+  // Serial.println("");
+
+  if(len == 0) {
+    Serial.println("len = 0");
+    return NULL;
+  }
+  uint8_t bufLen = 0;
+  char* buffer = new char[len+1];
+  for (size_t i = 0; i < len; ++i) {
+    // Serial.print(src[s]); //also debug
+    buffer[i] = src[s++];
+  }
+  buffer[len] = '\0';
+  return buffer;
 }
