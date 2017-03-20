@@ -9,15 +9,38 @@ ESP8266WebServer server(80);
 Timer t;
 Rrest r;
 
-// const char* ssid = "1337 internet";
-// const char* password = "icanhasinternet";
+// const char* ssid = "SFR_8550";
+// const char* password = "noff0erumustaltmisec";
 
-const char* ssid = "SFR_8550";
-const char* password = "noff0erumustaltmisec";
+// const char* ssid = "SFR-d4d7";
+// const char* password = "v9ngdwtka37c";
+
+const char* ssid = "SebastianAp";
+const char* password = "exiacesi2017";
 
 
-void turnOn() {
-  Serial.println("light turned on");
+void cycleLight() {
+  static bool lightStatus = false;
+
+  if(!lightStatus){
+    Serial.println("light turned on");
+    lightStatus = true;
+  } else {
+    Serial.println("light turned off");
+    lightStatus = false;
+  }
+}
+
+void listLight() {
+  Serial.print("There is ");
+  static int i = 0;
+  Serial.print(i++);
+  Serial.println(" lights");
+}
+
+void groupLight(uint8_t ressourceId) {
+  Serial.print("grouped light callback with id");
+  Serial.println(ressourceId);
 }
 
 void handleico() {
@@ -26,12 +49,6 @@ void handleico() {
 
 void handleNotFound() {
   Serial.println("handleNotFound");
-  // if(!r.handleRest()) { //we call rest when the webserver doesn't recognize the entered URI
-  //   String message = "404 not found";
-  //   server.send(404,"text/plain", message);
-  // } else {
-  //   server.send(200);
-  // }
   r.handleRest();
   server.send(404);
 }
@@ -46,13 +63,6 @@ void setup() {
     delay(1000);
     WiFi.begin(ssid, password);
   }
-
-  /*
-    Rest test zone
-  */
-
-  // r.addRessource("light");
-  // r.addAction("light", "on",turnOn);
 
   Serial.println("WiFi connected");
   Serial.println(WiFi.localIP());

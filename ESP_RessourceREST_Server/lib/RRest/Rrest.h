@@ -5,24 +5,26 @@
 #endif
 
 #include <ESP8266WebServer.h>
-#define MAX_URI_ACTIONS 3
-#define MAX_RESSOURCE_COUNT 5
 
 #define ARRCOUNT(a) = (sizeof(a) / sizeof(*a));
 
+#define MAX_URI_ACTIONS 3
+#define MAX_RESSOURCE_COUNT 5
+
 extern ESP8266WebServer server;
+extern void cycleLight();
+extern void listLight();
+extern void groupLight(uint8_t ressourceId);
 /*
 -Ressource based REST interface
 TODO
+-ajouter une méthode qui va appeller les fonctions du main
 parsers
--direct parsing
 -ressource parsing
 -group parsing
 addRessource & addRessourceGroup
 AddRessourceCallback
-addAction
 defaultCallback
-handleRest
 
 Stockage des ressources
 */
@@ -32,84 +34,46 @@ typedef void (*Gcallback)(uint8_t ressourceID);
 
 enum RessourceType { GROUPED, SIMPLE };
 
-struct Action {
-  char* name = 0;   //init to default value to allow to be checked if empty
-  Callback funcptr;
-  Gcallback grpFuncptr;
-};
+typedef struct Action {
+  const char* name;
+  Callback actionCallback;
+}Action;
+
+typedef struct gAction {
+  const char* name;
+  Gcallback actionCallback;
+}gAction;
 
 typedef struct ressource {
-  char* ressourceName;
+  const char* ressourceName;
   Action actions[MAX_URI_ACTIONS];
-  Callback funcPtrCallback = NULL;
-  Callback defaultCallback = NULL;
+  Callback defaultCallback;
 }ressource;
 
-typedef struct groupRessources {
-  char* groupRessourceName;
-  Action actions[MAX_URI_ACTIONS];
-  uint8_t count = 0;                  //number of ressources (ex if we want to control 2 lights count will be 2)
-  Callback defaultCallback = NULL;
-  Gcallback groupPtrCallback = NULL;
-}groupRessources;
+typedef struct groupRessource {
+  const char* ressourceName;
+  gAction actions[MAX_URI_ACTIONS];
+  uint8_t count;
+  Callback defaultCallback;
+}groupressource;
 
-static struct ressource s_ressource[MAX_RESSOURCE_COUNT];
-static struct groupRessources s_groupRessources[MAX_RESSOURCE_COUNT];
+static const struct ressource s_ressource[] = {
+  {"light", {{"on", cycleLight},{"off", cycleLight}}, listLight}
+};
+
+static const struct groupRessource s_groupRessource[] = {
+  {"lights", {{"on",groupLight},{"off", groupLight}},2,listLight}
+};
 
 class Rrest {
 public:
+
   //default constructor
   Rrest();
 
   //called periodically to check if an url has been sent
   //we could make a better system for this to be triggered when a client sends a request
   bool handleRest();
-
-  /*RESSOURCE MANAGEMENT FUNCTIONS*/
-
-  /*
-  Add a simple ressource
-  example: http://esp.local/light is a ressource
-  */
-  void addRessource(char* ressourceName);
-
-  /*
-  Add a grouped ressource
-  example: http://esp.local/light/1/ is a group resssource with id 1
-  */
-  void addRessourceGroup(char* ressourceName, uint8_t count);
-
-  /*
-  add a default callback for the ressource
-  example on ressource light:
-  http://esp.local/light will be the default callback (usually read)
-  ressourceType = GROUPED or SIMPLE
-  */
-  void addRessourceCallback(char* ressourceName, Callback funcPtr, RessourceType t);
-
-  /*
-  Add action to simple ressource
-  example http://esp.local/light/on is an action
-  */
-  void addAction(char* ressourceName, char* action, Callback funcPtr);  //direct ressource
-
-  /*
-  Add action to group ressource
-  example http://esp.local/light/1/on is an action on a grouped ressource
-  */
-  void addGroupAction(char* ressourceName, char* action, Gcallback funcPtr); //grouped ressource
-
-  /*
-  Removes simple ressource
-  sets the name to 0 and deletes all callbacks + actions
-  */
-  void removeRessource(char* ressourceName);
-
-  /*
-  Removes grouped ressource
-  sets the name to 0 and deletes all callbacks + actions
-  */
-  void removeRessourceGroup(char* ressourceName);
 
 private:
   /*
@@ -124,12 +88,11 @@ private:
   returns 255 if the ressource doesn't exists
   */
   uint8_t locateRessource(char* ressourceName, struct ressource* st);
-  uint8_t locateRessource(char* ressourceName, struct groupRessources* st);
+  uint8_t locateRessource(char* ressourceName, struct groupRessource* st);
 
   /*PARSERS*/
-  Callback directParser();
-  Callback ressourceParser();
-  Gcallback groupParser();
+  Callback directParser(char** blockStorage, uint8_t blockSize);
+  Callback ressourceParser(char** blockStorage, uint8_t blockSize);
+  Gcallback groupParser(char** blockStorage);
 };
-
 #endif
