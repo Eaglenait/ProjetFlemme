@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>6</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>798</x>
+      <y>234</y>
+      <w>132</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>Rapi
+--
+typedef struct uri_struct
+uri_struct uri_storage[]
+uint8_t structElements
+uint8_t ressourceIdentifier
+--
+Rapi()
+void handleRest()
+String parseURI(String uri)
+int extractRessourceID()
+String listHandeledURI()
+--
+Responsabilities
+-Parse the URI into a usable 
+format
+-Handle different URIs with
+ressource id and different actions
+-Save header keys for reuse
+-Trigger a function when 
+accessing a valid uri
+-Parsing and extracting the 
+incomine post and put JSON</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>948</x>
+      <y>342</y>
+      <w>168</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>_function: void handleRest()_
+--
+Input: void
+--
+Return: bool isHandelable
+--
+When called it will check if the called uri
+is present in the uri_struct we initialized.
+It will also check if we access it with the
+correct HTTP method.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1194</x>
+      <y>342</y>
+      <w>126</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>_function: String ParseURI()_
+bg=#7f776b
+--
+Input: String uri
+--
+Return: String parsed_uri
+--
+This method returns a generic 
+uri when called. A genric uri
+is a uri with the ressources 
+identifier replaced by "num"
+and actions (last part of the uri)
+by action</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1110</x>
+      <y>348</y>
+      <w>96</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+URI
+</panel_attributes>
+    <additional_attributes>140.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1110</x>
+      <y>384</y>
+      <w>96</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+Parsed uri</panel_attributes>
+    <additional_attributes>10.0;20.0;140.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>726</x>
+      <y>342</y>
+      <w>60</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Rapi.cpp
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>552</x>
+      <y>342</y>
+      <w>60</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Main.ino</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>636</x>
+      <y>342</y>
+      <w>60</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Rapi.h</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>690</x>
+      <y>342</y>
+      <w>48</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>606</x>
+      <y>342</y>
+      <w>42</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>288</x>
+      <y>366</y>
+      <w>60</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Access URI</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>288</x>
+      <y>402</y>
+      <w>60</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Parse header</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>366</x>
+      <y>384</y>
+      <w>114</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>check :
+--
+URI is handelable
+HTTP method is supported
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>294</x>
+      <y>378</y>
+      <w>18</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>342</x>
+      <y>402</y>
+      <w>36</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>40.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>384</x>
+      <y>432</y>
+      <w>90</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+URI not handelable</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>480</y>
+      <w>60</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>return 404</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>546</x>
+      <y>390</y>
+      <w>96</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>Call corresponding
+URI function with 
+ressource id 
+(if existing)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>474</x>
+      <y>384</y>
+      <w>84</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+URI handelable</panel_attributes>
+    <additional_attributes>120.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>588</x>
+      <y>354</y>
+      <w>18</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>468</x>
+      <y>510</y>
+      <w>102</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Make JSON response</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>540</x>
+      <y>462</y>
+      <w>102</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Callback function</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1188</x>
+      <y>228</y>
+      <w>132</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>_function: string listMethods()_
+--
+input: void
+--
+return string URIs
+--
+when called returns every entry in 
+uri_struct.uri and every 
+corresponding action (if any exist)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1338</x>
+      <y>228</y>
+      <w>138</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>_function: int extractRessourceID()_
+bg=#9AC1CB
+--
+Input: String parsedUri, uri
+--
+Return: int Ressource Id 
+--
+Extracts the ressource ID from
+an uri using an existing parsedURI</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>432</x>
+      <y>636</y>
+      <w>810</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>dev workflow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>426</x>
+      <y>660</y>
+      <w>90</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>in Main.ino
+instanciate Rest class,
+web server</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>528</x>
+      <y>660</y>
+      <w>96</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>in Main.ino
+Add restHandler
+to be called when
+a client try to get acess
+to an uri</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>636</x>
+      <y>660</y>
+      <w>150</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>in rapi.cpp
+add the desired URI
+with corresponding callback functions 
+pointers and options</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>798</x>
+      <y>660</y>
+      <w>114</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>in Main.ino
+declare callback functions
+behavior
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>924</x>
+      <y>660</y>
+      <w>150</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>in rapi.h
+add the function as extern 
+variables
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1086</x>
+      <y>660</y>
+      <w>150</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>(optional)
+in callback functions
+Make JSON response 
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>606</x>
+      <y>510</y>
+      <w>102</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Send to client</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>588</x>
+      <y>432</y>
+      <w>18</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>552</x>
+      <y>474</y>
+      <w>30</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>30.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>606</x>
+      <y>474</y>
+      <w>30</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>30.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>798</x>
+      <y>468</y>
+      <w>132</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>_struct: uri_struct_
+--
+String uri
+void (*pointeurFunc)()
+bool hasRessourcesIdentifier
+uint8_t pos
+HTTPMethod methods[]
+String actions[]
+--
+Structure that will store the 
+handelable uri, a corresponding 
+function to call, if it has a 
+ressource identifier or not, the
+ressource id position, an array
+of authorized http methods
+and the actions we can use with
+the uri.
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>960</x>
+      <y>234</y>
+      <w>126</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>_constuctor: Rapi()_
+--
+Input: void
+--
+In the constructor we initialize 
+the headers that we want to 
+save</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1338</x>
+      <y>318</y>
+      <w>138</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>_function: int getLastRessourceID()_
+bg=#9AC1CB
+--
+Input: void
+--
+Return: int Ressource Id 
+--
+Returns the last ressource Id
+Is set at each ParseURI
+if we parse an URI with no 
+ressource id, the LastRessourceID
+will stay the same</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1338</x>
+      <y>432</y>
+      <w>138</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>_function: int getLastAction()_
+bg=#F15C5C
+--
+Input: void
+--
+Return: String LastAction
+--
+Returns the last ressource Id
+Is set at each ParseURI
+if we parse an URI with no 
+action id, the last action
+will be the last part of the uri 
+(every thing after the last '/')</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1164</x>
+      <y>492</y>
+      <w>156</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>_function: int getJsonFormArg()_
+bg=#ead975
+--
+Input: String argName
+--
+Return: String Argument
+--
+Allows to extract a specific information
+from an incoming Json Post or Put 
+request.
+Note: If the content-type is not set to
+application/json this function won't work</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>948</x>
+      <y>492</y>
+      <w>168</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>_function: int getJsonFormNestedArg()_
+bg=#ead975
+--
+Input: String argName, String nestedArg
+--
+Return: String Argument
+--
+Allows to extract a specific information
+from an incoming Json Post or Put 
+request. this will allow to get the argument
+contained into a Json Array
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>660</x>
+      <y>402</y>
+      <w>90</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>Get Ressource ID
+Get URI Action
+Get Post Put Json
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>672</x>
+      <y>354</y>
+      <w>18</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>636</x>
+      <y>432</y>
+      <w>36</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;50.0;40.0;10.0</additional_attributes>
+  </element>
+</diagram>

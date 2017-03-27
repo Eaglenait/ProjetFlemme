@@ -32,7 +32,7 @@ Stockage des ressources
 typedef void (*Callback)();
 typedef void (*Gcallback)(uint8_t ressourceID);
 
-enum RessourceType { GROUPED, SIMPLE };
+enum RessourceType { GROUPED, SIMPLE, NONE };
 
 typedef struct Action {
   const char* name;
@@ -43,6 +43,12 @@ typedef struct gAction {
   const char* name;
   Gcallback actionCallback;
 }gAction;
+
+typedef struct callbackType {
+  uint8_t callbackPos;
+  uint8_t actionPos;
+  RessourceType type;
+}callbackType;
 
 typedef struct ressource {
   const char* ressourceName;
@@ -68,6 +74,8 @@ static const struct groupRessource s_groupRessource[] = {
 class Rrest {
 public:
 
+  const size_t ressourceElements = (sizeof(s_ressource)/(sizeof(*s_ressource)));
+  const size_t groupRessourceElements = (sizeof(s_groupRessource)/(sizeof(*s_groupRessource)));
   //default constructor
   Rrest();
 
@@ -87,12 +95,12 @@ private:
   Ressource locator
   returns 255 if the ressource doesn't exists
   */
-  uint8_t locateRessource(char* ressourceName, struct ressource* st);
-  uint8_t locateRessource(char* ressourceName, struct groupRessource* st);
+  uint8_t locateRessource(char* ressourceName, const struct ressource* st);
+  uint8_t locateRessource(char* ressourceName, const struct groupRessource* st);
 
   /*PARSERS*/
-  Callback directParser(char** blockStorage, uint8_t blockSize);
-  Callback ressourceParser(char** blockStorage, uint8_t blockSize);
-  Gcallback groupParser(char** blockStorage);
+  callbackType directParser(char** blockStorage, uint8_t blockSize);
+  callbackType ressourceParser(char** blockStorage, uint8_t blockSize);
+  callbackType groupParser(char** blockStorage, uint8_t blockSize);
 };
 #endif
