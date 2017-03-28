@@ -12,7 +12,13 @@
 #define MAX_RESSOURCE_COUNT 5
 
 extern ESP8266WebServer server;
-extern void cycleLight();
+extern void lightOn();
+extern void lightOff();
+
+extern void lightOn(uint8_t ressourceID);
+extern void lightOff(uint8_t ressourceID);
+
+extern void lightStatus();
 extern void listLight();
 extern void groupLight(uint8_t ressourceId);
 /*
@@ -50,6 +56,14 @@ typedef struct callbackType {
   RessourceType type;
 }callbackType;
 
+typedef struct gCallbackType {
+  uint8_t callbackPos;
+  uint8_t actionPos;
+  uint8_t ressourceID;
+  RessourceType type;
+}gCallbackType;
+
+
 typedef struct ressource {
   const char* ressourceName;
   Action actions[MAX_URI_ACTIONS];
@@ -64,11 +78,11 @@ typedef struct groupRessource {
 }groupressource;
 
 static const struct ressource s_ressource[] = {
-  {"light", {{"on", cycleLight},{"off", cycleLight}}, listLight}
+  {"light", {{"on", lightOn},{"off", lightOff}}, lightStatus}
 };
 
 static const struct groupRessource s_groupRessource[] = {
-  {"lights", {{"on",groupLight},{"off", groupLight}},2,listLight}
+  {"lights", {{"on",lightOn},{"off", lightOff}},2,listLight}
 };
 
 class Rrest {
@@ -101,6 +115,6 @@ private:
   /*PARSERS*/
   callbackType directParser(char** blockStorage, uint8_t blockSize);
   callbackType ressourceParser(char** blockStorage, uint8_t blockSize);
-  callbackType groupParser(char** blockStorage, uint8_t blockSize);
+  gCallbackType groupParser(char** blockStorage, uint8_t blockSize);
 };
 #endif

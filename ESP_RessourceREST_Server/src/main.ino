@@ -18,29 +18,68 @@ Rrest r;
 const char* ssid = "SebastianAp";
 const char* password = "exiacesi2017";
 
+const int GREEN   = 12;
+const int BLUE    = 13;
+const int RED     = 15;
 
-void cycleLight() {
-  static bool lightStatus = false;
+void lightOn() {
+  analogWrite(RED,0);
+  analogWrite(BLUE,0);
+  analogWrite(GREEN,255);
+}
 
-  if(!lightStatus){
-    Serial.println("light turned on");
-    lightStatus = true;
-  } else {
-    Serial.println("light turned off");
-    lightStatus = false;
-  }
+void lightOn(uint8_t ressourcesID) {
+  analogWrite(RED,0);
+  analogWrite(BLUE,0);
+  analogWrite(GREEN,255);
+}
+
+void lightOff() {
+  analogWrite(RED,0);
+  analogWrite(BLUE,0);
+  analogWrite(GREEN,0);
+}
+
+void lightOff(uint8_t ressourceID) {
+  analogWrite(RED,0);
+  analogWrite(BLUE,0);
+  analogWrite(GREEN,0);
+}
+
+void lightStatus() {
+  Serial.print("Light is ");
+  Serial.println(analogRead(GREEN));
 }
 
 void listLight() {
-  Serial.print("There is ");
-  static int i = 0;
-  Serial.print(i++);
-  Serial.println(" lights");
+  Serial.print("Green is ");
+  analogRead(GREEN) == 255 ? Serial.println("on") : Serial.println("off");
+  Serial.print("Red is ");
+  analogRead(RED) == 255 ? Serial.println("on") : Serial.println("off");
+  Serial.print("Blue is ");
+  analogRead(BLUE) == 255 ? Serial.println("on") : Serial.println("off");
 }
 
 void groupLight(uint8_t ressourceId) {
-  Serial.print("grouped light callback with id");
-  Serial.println(ressourceId);
+  switch (ressourceId) {
+    case 0:
+      analogWrite(GREEN,255);
+      t.after(1000, lightOff);
+    break;
+    case 1:
+      analogWrite(BLUE,255);
+      t.after(1000, lightOff);
+    break;
+    case 2:
+      analogWrite(RED,255);
+      t.after(1000, lightOff);
+    break;
+    default:
+    analogWrite(RED,127);
+    analogWrite(BLUE,127);
+    t.after(1000, lightOff);
+    break;
+  }
 }
 
 void handleico() {
@@ -67,7 +106,11 @@ void setup() {
   Serial.println("WiFi connected");
   Serial.println(WiFi.localIP());
 
-  while(!MDNS.begin("esp8266server")) {
+  pinMode(RED,OUTPUT);
+  pinMode(BLUE,OUTPUT);
+  pinMode(GREEN,OUTPUT);
+
+  while(!MDNS.begin("esp")) {
     delay(1000);
     Serial.println("Error setting up MDNS responder!");
   }
@@ -89,4 +132,5 @@ void setup() {
 
 void loop() {
   server.handleClient();
+  t.update();
 }
