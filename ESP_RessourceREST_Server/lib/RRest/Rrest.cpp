@@ -5,7 +5,10 @@ Rrest::Rrest() {}
 //TODO Support uri argument ex:/light/on?arg=2
 //ISSUE:
 /*
-  Parfois quand on envoie un uri avec qu'un seul argument le / de fin est quand même inclus
+  on peux envoyer une action de ressource groupée sans identifiant
+  - /lights/on -> marche  /lights/off -> marche pas
+  - - Calling groupParser with blockSize 2
+  - - callback found with pos: 0 and actionPos 0 and ressourceID 0
 */
 //TODO Test
 
@@ -48,37 +51,63 @@ bool Rrest::handleRest() {
   callbackType cbt = directParser(blockStorage, b);
   if(cbt.callbackPos != 255) {
     if (cbt.type == SIMPLE) {
+
+      /*DEBUG*/
+      Serial.print("Callbacktype SIMPLE callbackPos: ");
+      Serial.println(cbt.callbackPos);
+
       s_ressource[cbt.callbackPos].defaultCallback();
       return true;
     } else if ( cbt.type == GROUPED) {
+      /*DEBUG*/
+      Serial.print("Callbacktype GROUPED callbackPos: ");
+      Serial.println(cbt.callbackPos);
+
       s_groupRessource[cbt.callbackPos].defaultCallback();
       return true;
     } else {
-      return false;
+      Serial.println("callback not directParser");
     }
   }
 
   cbt = ressourceParser(blockStorage,b);
+  Serial.print("Calling ressourceParser with blockSize ");
+  Serial.println(b);
   if(cbt.callbackPos != 255 && cbt.actionPos != 255) {
     if(cbt.type != NONE) {
+      Serial.print("callback found with pos: ");
+      Serial.print(cbt.callbackPos);
+      Serial.print(" and actionPos ");
+      Serial.println(cbt.actionPos);
     s_ressource[cbt.callbackPos].actions[cbt.actionPos].actionCallback();
     return true;
     }
+  }else {
+    Serial.println("callback not ressourceParser");
   }
 
   gCallbackType gcbt = groupParser(blockStorage, b);
+  Serial.print("Calling groupParser with blockSize ");
+  Serial.println(b);
   if(gcbt.callbackPos != 255 && gcbt.actionPos != 255 && gcbt.ressourceID != 255) {
     if(gcbt.type == GROUPED) {
+      Serial.print("callback found with pos: ");
+      Serial.print(gcbt.callbackPos);
+      Serial.print(" and actionPos ");
+      Serial.print(gcbt.actionPos);
+      Serial.print(" and ressourceID ");
+      Serial.print(gcbt.ressourceID);
+
       s_groupRessource[gcbt.callbackPos].actions[gcbt.actionPos].actionCallback(gcbt.ressourceID);
       return true;
     }
   }
 
+  Serial.println("--Not Parsable--");
   return false; //if no parser works return false
 }
 
 /*PARSERS*/
-//TODO Test group callback
 callbackType Rrest::directParser(char** blockStorage, uint8_t blockSize) {
   //if there is only one uri block we are accessing the ressource directly
   if(blockSize != 1) {
@@ -99,8 +128,8 @@ callbackType Rrest::directParser(char** blockStorage, uint8_t blockSize) {
 
 //TODO test
 callbackType Rrest::ressourceParser(char** blockStorage, uint8_t blockSize) {
-
   //detects if a block is only made of numeric values
+  //if true it's a grouped ressource
   for (size_t i = 0; i < blockSize; ++i) {
     uint8_t cv = 0;
     for (size_t j = 0; j < strlen(blockStorage[i]); ++j) {
@@ -114,30 +143,29 @@ callbackType Rrest::ressourceParser(char** blockStorage, uint8_t blockSize) {
     cv = 0;
   }
 
+  //locate Ressource
   uint8_t resPos = locateRessource(blockStorage[0], s_ressource);
   if(resPos == 255) {
     return {255,255,NONE};
   }
 
-  uint8_t actPos = 0;//found action position
-
-  while (strcmp(blockStorage[1], s_ressource[resPos].actions[actPos].name) != 0) {
-    actPos++;
-    if(actPos > MAX_URI_ACTIONS) return {255,255,NONE};
+  //locate action
+  uint8_t actPos = 0;
+  while(strcmp(blockStorage[1], s_ressource[resPos].actions[actPos].name) != 0) {
+    if(actPos+1 >= MAX_URI_ACTIONS) {
+      return {255,255,NONE};
+    }
+    ++actPos;
   }
-
   return {resPos,actPos,SIMPLE};
 }
 
 //TODO end and test
 gCallbackType Rrest::groupParser(char** blockStorage, uint8_t blockSize) {
-
-  Serial.println("CALLING GROUPPARSER");
-
   uint8_t numPos = 0;
   uint8_t resID = 0;
 
-  //TODO garder la postiion du bloc numeriqueF
+  //detects if a block is only made of numeric values
   for (size_t i = 0; i < blockSize; ++i) {
     uint8_t cv = 0;
     for (size_t j = 0; j < strlen(blockStorage[i]); ++j) {
@@ -151,26 +179,28 @@ gCallbackType Rrest::groupParser(char** blockStorage, uint8_t blockSize) {
     cv = 0;
   }
 
-  Serial.println(blockStorage[numPos]);
+  //convert numeric block into int
   resID = atoi(blockStorage[numPos]);
 
-  Serial.print("bloc numérique ");
-  Serial.println(numPos);
-
+  //locate ressource position
   uint8_t resPos = locateRessource(blockStorage[0], s_groupRessource);
   if(resPos == 255) {
     return {255,255,255,NONE};
   }
 
-  uint8_t actPos = 0;
-
+  //sanity check
   if(numPos >= blockSize) {
     return {255,255,255,NONE};
   }
 
-  while (strcmp(blockStorage[numPos+1], s_groupRessource[resPos].actions[actPos].name) != 0) {
-    actPos++;
-    if(actPos < MAX_URI_ACTIONS) return {255,255,255,NONE};
+  //locate action
+  //we assume that the action is right after the numeric block (numPos+1)
+  uint8_t actPos = 0;
+  while(strcmp(blockStorage[numPos+1], s_ressource[resPos].actions[actPos].name) != 0) {
+    if(actPos+1 >= MAX_URI_ACTIONS) {
+      return {255,255,NONE};
+    }
+    ++actPos;
   }
 
   return {resPos,actPos,resID,GROUPED};

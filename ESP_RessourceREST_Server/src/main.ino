@@ -9,14 +9,14 @@ ESP8266WebServer server(80);
 Timer t;
 Rrest r;
 
-// const char* ssid = "SFR_8550";
-// const char* password = "noff0erumustaltmisec";
+const char* ssid = "SFR_8550";
+const char* password = "noff0erumustaltmisec";
 
 // const char* ssid = "SFR-d4d7";
 // const char* password = "v9ngdwtka37c";
 
-const char* ssid = "SebastianAp";
-const char* password = "exiacesi2017";
+// const char* ssid = "SebastianAp";
+// const char* password = "exiacesi2017";
 
 const int GREEN   = 12;
 const int BLUE    = 13;
@@ -26,29 +26,38 @@ void lightOn() {
   analogWrite(RED,0);
   analogWrite(BLUE,0);
   analogWrite(GREEN,255);
+  server.send(200);
 }
 
-void lightOn(uint8_t ressourcesID) {
+void lightOn(uint8_t ressourceID) {
+  Serial.println("ressourcesID ");
+  Serial.println(ressourceID);
   analogWrite(RED,0);
   analogWrite(BLUE,0);
   analogWrite(GREEN,255);
+  server.send(200);
 }
 
 void lightOff() {
   analogWrite(RED,0);
   analogWrite(BLUE,0);
   analogWrite(GREEN,0);
+  server.send(200);
 }
 
 void lightOff(uint8_t ressourceID) {
+  Serial.println("ressourcesID ");
+  Serial.println(ressourceID);
   analogWrite(RED,0);
   analogWrite(BLUE,0);
   analogWrite(GREEN,0);
+  server.send(200);
 }
 
 void lightStatus() {
   Serial.print("Light is ");
   Serial.println(analogRead(GREEN));
+  server.send(200);
 }
 
 void listLight() {
@@ -58,28 +67,7 @@ void listLight() {
   analogRead(RED) == 255 ? Serial.println("on") : Serial.println("off");
   Serial.print("Blue is ");
   analogRead(BLUE) == 255 ? Serial.println("on") : Serial.println("off");
-}
-
-void groupLight(uint8_t ressourceId) {
-  switch (ressourceId) {
-    case 0:
-      analogWrite(GREEN,255);
-      t.after(1000, lightOff);
-    break;
-    case 1:
-      analogWrite(BLUE,255);
-      t.after(1000, lightOff);
-    break;
-    case 2:
-      analogWrite(RED,255);
-      t.after(1000, lightOff);
-    break;
-    default:
-    analogWrite(RED,127);
-    analogWrite(BLUE,127);
-    t.after(1000, lightOff);
-    break;
-  }
+  server.send(200);
 }
 
 void handleico() {
@@ -87,9 +75,9 @@ void handleico() {
 }
 
 void handleNotFound() {
-  Serial.println("handleNotFound");
-  r.handleRest();
-  server.send(404);
+  if(!r.handleRest()) {
+    server.send(404);
+  }
 }
 
 void setup() {

@@ -77,12 +77,15 @@ typedef struct groupRessource {
   Callback defaultCallback;
 }groupressource;
 
+/*
+Empty actions has to be initialized at {'\0',NULL}
+*/
 static const struct ressource s_ressource[] = {
-  {"light", {{"on", lightOn},{"off", lightOff}}, lightStatus}
+  {"light", {{"on", lightOn},{"off", lightOff},{"\0",NULL}}, lightStatus}
 };
 
 static const struct groupRessource s_groupRessource[] = {
-  {"lights", {{"on",lightOn},{"off", lightOff}},2,listLight}
+  {"lights", {{"on",lightOn},{"off", lightOff},{'\0',NULL}},2,listLight}
 };
 
 class Rrest {
