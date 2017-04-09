@@ -10,7 +10,6 @@ Rrest::Rrest() {}
   - - Calling groupParser with blockSize 2
   - - callback found with pos: 0 and actionPos 0 and ressourceID 0
 */
-//TODO Test
 
 bool Rrest::handleRest() {
   char* _uri = new char[server.uri().length() + 1];
@@ -53,61 +52,60 @@ bool Rrest::handleRest() {
     if (cbt.type == SIMPLE) {
 
       /*DEBUG*/
-      Serial.print("Callbacktype SIMPLE callbackPos: ");
-      Serial.println(cbt.callbackPos);
+      // Serial.print("Callbacktype SIMPLE callbackPos: ");
+      // Serial.println(cbt.callbackPos);
 
       s_ressource[cbt.callbackPos].defaultCallback();
       return true;
     } else if ( cbt.type == GROUPED) {
       /*DEBUG*/
-      Serial.print("Callbacktype GROUPED callbackPos: ");
-      Serial.println(cbt.callbackPos);
+      // Serial.print("Callbacktype GROUPED callbackPos: ");
+      // Serial.println(cbt.callbackPos);
 
       s_groupRessource[cbt.callbackPos].defaultCallback();
       return true;
-    } else {
-      Serial.println("callback not directParser");
-    }
+    } //else {
+      //Serial.println("callback not directParser");
+    //}
   }
 
   cbt = ressourceParser(blockStorage,b);
-  Serial.print("Calling ressourceParser with blockSize ");
-  Serial.println(b);
+  // Serial.print("Calling ressourceParser with blockSize ");
+  // Serial.println(b);
   if(cbt.callbackPos != 255 && cbt.actionPos != 255) {
     if(cbt.type != NONE) {
-      Serial.print("callback found with pos: ");
-      Serial.print(cbt.callbackPos);
-      Serial.print(" and actionPos ");
-      Serial.println(cbt.actionPos);
+      // Serial.print("callback found with pos: ");
+      // Serial.print(cbt.callbackPos);
+      // Serial.print(" and actionPos ");
+      // Serial.println(cbt.actionPos);
     s_ressource[cbt.callbackPos].actions[cbt.actionPos].actionCallback();
     return true;
     }
-  }else {
-    Serial.println("callback not ressourceParser");
-  }
+  }//else {
+    //Serial.println("callback not ressourceParser");
+  //}
 
   gCallbackType gcbt = groupParser(blockStorage, b);
-  Serial.print("Calling groupParser with blockSize ");
-  Serial.println(b);
+  // Serial.print("Calling groupParser with blockSize ");
+  // Serial.println(b);
   if(gcbt.callbackPos != 255 && gcbt.actionPos != 255 && gcbt.ressourceID != 255) {
     if(gcbt.type == GROUPED) {
-      Serial.print("callback found with pos: ");
-      Serial.print(gcbt.callbackPos);
-      Serial.print(" and actionPos ");
-      Serial.print(gcbt.actionPos);
-      Serial.print(" and ressourceID ");
-      Serial.print(gcbt.ressourceID);
+      // Serial.print("callback found with pos: ");
+      // Serial.print(gcbt.callbackPos);
+      // Serial.print(" and actionPos ");
+      // Serial.print(gcbt.actionPos);
+      // Serial.print(" and ressourceID ");
+      // Serial.print(gcbt.ressourceID);
 
       s_groupRessource[gcbt.callbackPos].actions[gcbt.actionPos].actionCallback(gcbt.ressourceID);
       return true;
     }
   }
 
-  Serial.println("--Not Parsable--");
+  // Serial.println("--Not Parsable--");
   return false; //if no parser works return false
 }
 
-/*PARSERS*/
 callbackType Rrest::directParser(char** blockStorage, uint8_t blockSize) {
   //if there is only one uri block we are accessing the ressource directly
   if(blockSize != 1) {
@@ -126,7 +124,6 @@ callbackType Rrest::directParser(char** blockStorage, uint8_t blockSize) {
     return {255,255,NONE}; // if no ressource is found
   }
 
-//TODO test
 callbackType Rrest::ressourceParser(char** blockStorage, uint8_t blockSize) {
   //detects if a block is only made of numeric values
   //if true it's a grouped ressource
@@ -160,7 +157,6 @@ callbackType Rrest::ressourceParser(char** blockStorage, uint8_t blockSize) {
   return {resPos,actPos,SIMPLE};
 }
 
-//TODO end and test
 gCallbackType Rrest::groupParser(char** blockStorage, uint8_t blockSize) {
   uint8_t numPos = 0;
   uint8_t resID = 0;
@@ -238,7 +234,7 @@ char* Rrest::strExtr(char* src, uint8_t s, uint8_t e) {
   */
 
   if(len == 0) {
-    Serial.println("len = 0");
+    // Serial.println("len = 0");
     return NULL;
   }
   uint8_t bufLen = 0;

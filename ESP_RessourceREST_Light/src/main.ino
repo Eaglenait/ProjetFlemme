@@ -9,7 +9,7 @@ ESP8266WebServer server(80);
 Timer t;
 Rrest r;
 
-const char* ssid = "SFR_8550";²
+const char* ssid = "SFR_8550";
 const char* password = "noff0erumustaltmisec";
 
 // const char* ssid = "SFR-d4d7";
@@ -29,25 +29,7 @@ void lightOn() {
   server.send(200);
 }
 
-void lightOn(uint8_t ressourceID) {
-  Serial.println("ressourcesID ");
-  Serial.println(ressourceID);
-  analogWrite(RED,0);
-  analogWrite(BLUE,0);
-  analogWrite(GREEN,255);
-  server.send(200);
-}
-
 void lightOff() {
-  analogWrite(RED,0);
-  analogWrite(BLUE,0);
-  analogWrite(GREEN,0);
-  server.send(200);
-}
-
-void lightOff(uint8_t ressourceID) {
-  Serial.println("ressourcesID ");
-  Serial.println(ressourceID);
   analogWrite(RED,0);
   analogWrite(BLUE,0);
   analogWrite(GREEN,0);
@@ -57,16 +39,6 @@ void lightOff(uint8_t ressourceID) {
 void lightStatus() {
   Serial.print("Light is ");
   Serial.println(analogRead(GREEN));
-  server.send(200);
-}
-
-void listLight() {
-  Serial.print("Green is ");
-  analogRead(GREEN) == 255 ? Serial.println("on") : Serial.println("off");
-  Serial.print("Red is ");
-  analogRead(RED) == 255 ? Serial.println("on") : Serial.println("off");
-  Serial.print("Blue is ");
-  analogRead(BLUE) == 255 ? Serial.println("on") : Serial.println("off");
   server.send(200);
 }
 
